@@ -1,0 +1,17 @@
+langchain
+langchain-groq
+langchain-community
+langchain-huggingface
+langchain-text-splitters
+langchain-core
+faiss-cpu
+pymupdf
+streamlit
+fastapi
+uvicorn
+python-multipart
+python-dotenv
+rank-bm25
+sentence-transformers
+ragas
+pydantic
