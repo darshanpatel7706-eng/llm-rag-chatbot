@@ -36,11 +36,8 @@ def home():
 @app.post("/upload")
 async def upload_pdfs(files: list[UploadFile] = File(...)):
     global vectorstore, chain_tuple
-
     try:
         temp_paths = []
-
-        # Save uploaded files temporarily
         for file in files:
             with tempfile.NamedTemporaryFile(
                 delete=False,
@@ -51,12 +48,10 @@ async def upload_pdfs(files: list[UploadFile] = File(...)):
                 f.write(content)
                 temp_paths.append(f.name)
 
-        # Process PDFs
         chunks = process_pdfs(temp_paths)
         vectorstore = create_vectorstore(chunks)
         chain_tuple = create_chain(vectorstore)
 
-        # Cleanup temp files
         for path in temp_paths:
             os.unlink(path)
 
@@ -64,7 +59,6 @@ async def upload_pdfs(files: list[UploadFile] = File(...)):
             "message": f"{len(files)} PDF(s) processed successfully!",
             "total_chunks": len(chunks)
         }
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -72,25 +66,18 @@ async def upload_pdfs(files: list[UploadFile] = File(...)):
 @app.post("/ask")
 def ask_question(request: QuestionRequest):
     global chain_tuple
-
     if chain_tuple is None:
         raise HTTPException(
             status_code=400,
-            detail="No documents uploaded yet. Please upload PDFs first."
+            detail="No documents uploaded yet."
         )
-
     try:
         result = get_answer(chain_tuple, request.question)
-        return {
-            "answer": result["answer"],
-            "sources": result["sources"],
-            "rewritten_query": result["rewritten_query"]
-        }
-
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Get chat history endpoint
+# Get chat history
 @app.get("/history")
 def get_history():
     return {
@@ -98,7 +85,7 @@ def get_history():
         "history": chat_history
     }
 
-# Clear chat history endpoint
+# Clear chat history
 @app.delete("/history")
 def clear_history():
     chat_history.clear()
