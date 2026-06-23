@@ -15,4 +15,3 @@ rank-bm25
 sentence-transformers
 ragas
 pydantic
-torch --index-url https://download.pytorch.org/whl/cpu
