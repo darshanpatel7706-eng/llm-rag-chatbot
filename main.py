@@ -6,7 +6,7 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(__file__))
-from backend.rag import process_pdfs, create_vectorstore, create_chain, get_answer, chat_history
+from backend import rag
 
 # Initialize FastAPI
 app = FastAPI(title="AI Research Assistant API")
@@ -48,9 +48,9 @@ async def upload_pdfs(files: list[UploadFile] = File(...)):
                 f.write(content)
                 temp_paths.append(f.name)
 
-        chunks = process_pdfs(temp_paths)
-        vectorstore = create_vectorstore(chunks)
-        chain_tuple = create_chain(vectorstore)
+        chunks = rag.process_pdfs(temp_paths)
+        vectorstore = rag.create_vectorstore(chunks)
+        chain_tuple = rag.create_chain(vectorstore)
 
         for path in temp_paths:
             os.unlink(path)

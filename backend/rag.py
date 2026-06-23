@@ -52,11 +52,12 @@ def process_pdfs(pdf_paths: list):
     return all_chunks
 
 def create_vectorstore(chunks):
-    """Create FAISS vectorstore."""
+    """Create FAISS vectorstore from document chunks."""
+    from langchain_huggingface import HuggingFaceEmbeddings
     embeddings = HuggingFaceEmbeddings(
-      model_name="all-MiniLM-L6-v2",
-      model_kwargs={"device": "cpu"},
-      encode_kwargs={"batch_size": 4}
+        model_name="all-MiniLM-L6-v2",
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={"batch_size": 4}
     )
     vectorstore = FAISS.from_documents(chunks, embeddings)
     print("FAISS vectorstore created!")
